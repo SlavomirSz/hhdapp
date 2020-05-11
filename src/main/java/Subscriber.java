@@ -6,9 +6,7 @@ public class Subscriber {
     private String email;
     private boolean status;
 
-    public Subscriber(int id){
-        this.id = id;
-    }
+    public Subscriber(){    }
 
     public int getId() {
         return id;

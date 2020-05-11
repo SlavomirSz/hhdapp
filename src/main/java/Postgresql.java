@@ -6,8 +6,6 @@ public class Postgresql {
 
     public Postgresql(){}
 
-
-
     public Connection dbConnection(){
         Connection c=null;
         try {
@@ -25,12 +23,13 @@ public class Postgresql {
     }
 
     public Subscriber selectSubscriberById(int id) throws SQLException {
-        Subscriber subscriber = new Subscriber(id);
+        Subscriber subscriber = new Subscriber();
         try {
             Connection c = dbConnection();
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM SUBSCRIBERS WHERE ID=" + id + ";");
             while (rs.next()) {
+                subscriber.setId(rs.getInt("id"));
                 subscriber.setFisrtName(rs.getString("first_name"));
                 subscriber.setLastName(rs.getString("last_name"));
                 subscriber.setEmail(rs.getString("email"));
@@ -39,6 +38,7 @@ public class Postgresql {
             rs.close();
             stmt.close();
             c.close();
+            System.out.println("Closed database successfully");
         } catch (Exception e){
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
@@ -46,8 +46,32 @@ public class Postgresql {
         return subscriber;
     }
 
-    public List<Subscriber> selectActiveSubscribers(){
-        List<Subscriber> subscribers = new LinkedList<Subscriber>();
+    public int getSubscribersCount() {
+        int count = 0;
+        try {
+            Connection c = dbConnection();
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT DISTINCT COUNT(id) FROM SUBSCRIBERS WHERE STATUS=true;");
+            while (rs.next()) {
+                count = rs.getInt(1);
+            }
+            rs.close();
+            stmt.close();
+            c.close();
+            System.out.println("Closed database successfully");
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        return count;
+    }
+
+    public LinkedList<Subscriber> selectActiveSubscribers(){
+        int count = getSubscribersCount();
+        LinkedList<Subscriber> subscribers = new LinkedList<Subscriber>();
+        for(int i = 0 ;i <count;i++){
+            subscribers.add(new Subscriber());
+        }
         try {
             Connection c = dbConnection();
             Statement stmt = c.createStatement();
@@ -64,10 +88,27 @@ public class Postgresql {
             rs.close();
             stmt.close();
             c.close();
+            System.out.println("Closed database successfully");
         } catch (Exception e){
             System.err.println( e.getClass().getName()+": "+ e.getMessage() );
             System.exit(0);
         }
         return subscribers;
+    }
+
+    public void insertHolyday(){
+        //TODO
+        try {
+            Connection c = dbConnection();
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM SUBSCRIBERS WHERE ID=;");
+            rs.close();
+            stmt.close();
+            c.close();
+            System.out.println("Closed database successfully");
+        } catch (Exception e){
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
     }
 }
