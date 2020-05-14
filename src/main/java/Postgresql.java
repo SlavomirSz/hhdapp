@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -96,14 +97,38 @@ public class Postgresql {
         return subscribers;
     }
 
-    public void insertHolyday(){
-        //TODO
+    public String selectHolydays(Day day){
+        String resp= "";
         try {
             Connection c = dbConnection();
             Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM SUBSCRIBERS WHERE ID=;");
+            ResultSet rs = stmt.executeQuery("SELECT HOLLYDAYS FROM CALENDAR WHERE DAY=" + day.getDay() + " AND MONTH="+day.getMonth()+";");
+            while (rs.next()) {
+                resp = rs.getString("hollydays");
+            }
             rs.close();
             stmt.close();
+            c.close();
+            System.out.println("Closed database successfully");
+        } catch (Exception e){
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        return resp;
+    }
+
+    public void insertHolyday(Day day){
+        String SQL = "INSERT INTO calendar(day, month, hollydays) "
+                + "VALUES(?,?,?)";
+        try {
+            Connection c = dbConnection();
+            PreparedStatement pstmt = c.prepareStatement(SQL);
+            pstmt.setInt(1, day.getDay());
+            pstmt.setInt(2, day.getMonth());
+            pstmt.setString(3, day.getHollydays());
+            pstmt.executeUpdate();
+            System.out.println("Inserted!");
+            pstmt.close();
             c.close();
             System.out.println("Closed database successfully");
         } catch (Exception e){

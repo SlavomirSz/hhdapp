@@ -3,16 +3,15 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Kalbi {
 
     public Kalbi(){}
 
-    public ArrayList<String> getHolydays(int day, String month) throws UnirestException {
+    public ArrayList<String> getHolydays(Day day) throws UnirestException {
         ArrayList<String> holydays = new ArrayList<String>();
         Unirest.setTimeouts(0, 0);
-        HttpResponse<String> response = Unirest.get("https://www.kalbi.pl/"+day+"-"+month)
+        HttpResponse<String> response = Unirest.get("https://www.kalbi.pl/"+day.getDay()+"-"+day.getMonthS())
                 .asString();
         String body = response.getBody();
         try{

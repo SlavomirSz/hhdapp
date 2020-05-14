@@ -1,6 +1,7 @@
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.LinkedList;
 import java.util.Properties;
 
 public class Mailer {
@@ -8,7 +9,7 @@ public class Mailer {
     public Mailer(){
 
     }
-    public void sendEmail(){
+    public void sendEmail(LinkedList<Subscriber> subscribers, Day day){
         final String username = "happyholydayapp@gmail.com";
         final String password = "Behemoth666";
 
@@ -32,7 +33,7 @@ public class Mailer {
             message.setFrom(new InternetAddress(username));
             message.setRecipients(
                     Message.RecipientType.TO,
-                    InternetAddress.parse("sszlakowski@o2.pl")
+                    InternetAddress.parse("sszlakowski@o2.pl") //TODO
             );
             message.setSubject("Testing Gmail SSL");
             message.setText("Dear Mail Crawler,"
@@ -45,6 +46,18 @@ public class Mailer {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+    }
+
+    private String[] getHollydaysTable(String hollydays){
+        return hollydays.split("|");
+    }
+    private String setText(String[] hollydays){
+        //TODO
+        String text="";
+        for(int i=0;i<hollydays.length;i++){
+            text+="Wszystkiego najlepszego z okazji "+hollydays[i];
+        }
+        return text;
     }
 
 }
